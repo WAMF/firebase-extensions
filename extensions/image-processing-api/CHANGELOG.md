@@ -1,3 +1,7 @@
+## Version 0.1.2
+
+Security: an `input` operation of type `url` now only fetches from the hosts in the new `URL_HOST_ALLOW_LIST` parameter. The parameter is empty by default, which disables url inputs. Url inputs never connect to private, loopback or link-local addresses. Image fetches do not follow redirects, stop after 10 seconds and refuse responses larger than 20 MB.
+
 ## Version 0.1.1
 
 Updated POSTINSTALL parameters.

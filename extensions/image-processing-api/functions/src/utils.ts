@@ -17,10 +17,13 @@
 import * as superstruct from 'superstruct';
 import * as axios from 'axios';
 import * as fileType from 'file-type';
+import * as http from 'http';
+import * as https from 'https';
 
 import express from 'express';
 import a2a from 'a2a';
 import { AssertionError } from 'assert';
+import { publicOnlyLookup } from './url';
 
 /**
  * Keys in sharp file metadata that contain buffers. Used for
@@ -123,10 +126,34 @@ export async function isImageFileType(buffer: Buffer): Promise<boolean> {
   return type.mime.startsWith('image/');
 }
 
-export async function fetchImageBufferFromUrl(url: string): Promise<Buffer> {
+/**
+ * Limits for every image fetch. Redirects are not followed, so a redirect
+ * cannot move a request to a host that was not checked.
+ */
+export const fetchLimits = {
+  maxContentLength: 20 * 1024 * 1024,
+  timeout: 10000,
+  maxRedirects: 0,
+};
+
+const publicOnlyAgents = {
+  httpAgent: new http.Agent({ lookup: publicOnlyLookup }),
+  httpsAgent: new https.Agent({ lookup: publicOnlyLookup }),
+};
+
+/**
+ * Fetches an image. Set `publicOnly` for a url that a caller supplied:
+ * the request then refuses to connect to a non-public address.
+ */
+export async function fetchImageBufferFromUrl(
+  url: string,
+  { publicOnly = false }: { publicOnly?: boolean } = {},
+): Promise<Buffer> {
   const [possibleError, possibleResponse] = await a2a(
     axios.default.get(url, {
       responseType: 'arraybuffer',
+      ...fetchLimits,
+      ...(publicOnly ? publicOnlyAgents : {}),
     }),
   );
   let response: axios.AxiosResponse | undefined = possibleResponse;
@@ -147,6 +174,6 @@ export async function fetchImageBufferFromUrl(url: string): Promise<Buffer> {
 
   const errorMessage = `Unable to fetch image from url "${url}", the url returned a non-successful status code of "${response?.status}".`;
   throw new AssertionError({
-    message: `${errorMessage} The returned error was: ${possibleError.message}`,
+    message: `${errorMessage} The returned error was: ${possibleError?.message}`,
   });
 }

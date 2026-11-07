@@ -20,6 +20,7 @@ import * as utils from '../utils';
 import { Operation, OperationAction, OperationBuilder } from '../types';
 import { AssertionError } from 'assert';
 import { fetchImageBufferFromUrl } from '../utils';
+import { assertUrlAllowed } from '../url';
 import { extensionConfiguration } from '../config';
 
 /**
@@ -156,15 +157,29 @@ export const operationInput: OperationBuilder = {
 
 async function fetchUrl(options: OperationInput): Promise<OperationAction[]> {
   if (options.type !== 'url') return [];
-  if (!options.url.startsWith('http')) {
-    throw new AssertionError({
-      message: `'${options.url}' does not appear to be a valid http url.`,
-    });
-  }
+  const url = assertUrlAllowed(
+    options.url,
+    extensionConfiguration.urlAllowList,
+  );
   return [
     {
       method: 'constructor',
-      arguments: [await fetchImageBufferFromUrl(options.url)],
+      arguments: [
+        await fetchImageBufferFromUrl(url.toString(), { publicOnly: true }),
+      ],
+    },
+  ];
+}
+
+/**
+ * Fetches a storage url that this extension built or checked against the
+ * configured bucket. It does not need the url host allow list.
+ */
+async function fetchStorageUrl(url: string): Promise<OperationAction[]> {
+  return [
+    {
+      method: 'constructor',
+      arguments: [await fetchImageBufferFromUrl(url)],
     },
   ];
 }
@@ -193,7 +208,7 @@ async function fetchGcsFile(
         message: `Input 'source' does not appear to be a valid storage download url or is not specifically for the bucket '${extensionConfiguration.bucket}'`,
       });
     }
-    return fetchUrl({ ...options, url: options.source, type: 'url' });
+    return fetchStorageUrl(options.source);
   }
 
   if (options.source.startsWith('/')) {
@@ -202,13 +217,11 @@ async function fetchGcsFile(
     });
   }
 
-  return fetchUrl({
-    ...options,
-    url: `${firebaseStorageApi}/v0/b/${
+  return fetchStorageUrl(
+    `${firebaseStorageApi}/v0/b/${
       extensionConfiguration.bucket
     }/o/${encodeURIComponent(options.source)}?alt=media`,
-    type: 'url',
-  });
+  );
 }
 
 function newImageOptions(options: OperationInput): OperationAction[] {

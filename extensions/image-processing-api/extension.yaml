@@ -1,5 +1,5 @@
 name: image-processing-api
-version: 0.1.1
+version: 0.1.2
 specVersion: v1beta
 
 displayName: Image Processing API
@@ -119,3 +119,16 @@ params:
     example: '*.example.com,invertase.io'
     default: '*'
     required: true
+
+  - param: URL_HOST_ALLOW_LIST
+    label: Allowed hosts for url inputs.
+    description: >
+      A comma delimited list of hosts that an `input` operation of type `url`
+      may fetch images from. Use an exact host such as 'images.example.com',
+      or '*.example.com' to allow every sub domain. Leave this empty to
+      disable url inputs. Requests to private, loopback and link-local
+      addresses are always refused, and redirects are not followed.
+    type: string
+    example: 'images.example.com,*.cdn.example.com'
+    default: ''
+    required: false

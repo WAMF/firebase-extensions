@@ -19,4 +19,10 @@ export const extensionConfiguration = {
   corsAllowList: (process.env.CORS_ORIGIN_ALLOW_LIST || '*')
     .split(',')
     .map(s => s.trim()),
+  // Hosts that an `input` operation of type `url` may fetch from. Empty
+  // (the default) disables arbitrary url inputs.
+  urlAllowList: (process.env.URL_HOST_ALLOW_LIST || '')
+    .split(',')
+    .map(s => s.trim().toLowerCase())
+    .filter(s => s.length > 0),
 };
