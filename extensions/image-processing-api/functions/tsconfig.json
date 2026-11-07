@@ -13,7 +13,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "outDir": "lib"
+    "outDir": "lib",
+    "paths": {
+      "sharp": ["./node_modules/sharp/dist/index.d.cts"]
+    }
   },
   "exclude": ["node_modules", "__tests__"],
   "include": ["src"]
