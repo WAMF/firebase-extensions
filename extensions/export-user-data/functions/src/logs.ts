@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { logger } from 'firebase-functions';
+import { logger } from 'firebase-functions/v1';
 import config from './config';
 
 export const completeExport = (uid: string): void => {
