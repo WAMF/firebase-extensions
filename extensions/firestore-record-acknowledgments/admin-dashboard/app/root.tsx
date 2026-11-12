@@ -9,11 +9,9 @@ import {
 } from '@remix-run/react';
 import styles from './tailwind.css';
 
-export const meta: MetaFunction = () => ({
-  charset: 'utf-8',
-  title: 'Firestore Record Acknowledgments - Admin Dashboard',
-  viewport: 'width=device-width,initial-scale=1',
-});
+export const meta: MetaFunction = () => [
+  { title: 'Firestore Record Acknowledgments - Admin Dashboard' },
+];
 
 export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
 
@@ -21,6 +19,8 @@ export default function App() {
   return (
     <html lang="en">
       <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
       </head>
