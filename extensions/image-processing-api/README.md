@@ -51,6 +51,8 @@ To install an extension, your project must be on the [Blaze (pay as you go) plan
 
 - Allowed CORS origins.: A comma delimited value of allowed CORS origins. Use the default of '\*' to allow all origins. This is useful to lockdown your API and only allow your own website to embed the images directly. Note this will not prevent non-browser requests from accessing your API.
 
+- Allowed hosts for url inputs.: A comma delimited list of hosts that an `input` operation of type `url` may fetch images from. Use an exact host such as 'images.example.com', or '\*.example.com' to allow every sub domain. Leave this empty to disable url inputs. Requests to private, loopback and link-local addresses are always refused, and redirects are not followed.
+
 **Cloud Functions:**
 
 - **handler:** Serves a API accepting incoming HTTP requests.
