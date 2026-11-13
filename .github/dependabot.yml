@@ -1,0 +1,26 @@
+# Dependabot version updates for the npm lockfiles in this repository.
+# Refs WAMF/WAAF_DigitalWorkforce#2032 (remediation step 4).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directories:
+      - /
+      - /extensions/export-user-data/functions
+      - /extensions/firestore-record-acknowledgments/functions
+      - /extensions/firestore-record-acknowledgments/lib
+      - /extensions/image-processing-api/functions
+      - /extensions/image-processing-api/lib
+      - /extensions/export-user-data/demo
+      - /extensions/firestore-record-acknowledgments/admin-dashboard
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      npm-security:
+        applies-to: security-updates
+        patterns:
+          - '*'
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

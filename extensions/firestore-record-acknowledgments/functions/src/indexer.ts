@@ -1,5 +1,5 @@
 import * as protobuf from 'protobufjs';
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 import config from './config';
 
 // Query Scope defines the scope at which a query is run.
